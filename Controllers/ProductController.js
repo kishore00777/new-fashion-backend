@@ -60,7 +60,7 @@ const addProduct = (req, res) => {
     dealHead,
   };
 
-  const ProductJson = path.join(__dirname, "Data", "product.json");
+  const ProductJson = path.join(__dirname, "./Data", "product.json");
   console.log("ProductJson:", ProductJson);
   fs.readFile(ProductJson, "utf-8", (err, data) => {
     if (err) {
