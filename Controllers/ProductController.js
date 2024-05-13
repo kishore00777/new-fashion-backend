@@ -1,11 +1,11 @@
-const { GetAllProducts } = require("../Products");
+const { GetAllProducts } = require("./Products");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.resolve(__dirname, "../Data/productImages");
+    const uploadPath = path.resolve(__dirname, "./Data/productImages");
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
@@ -60,7 +60,7 @@ const addProduct = (req, res) => {
     dealHead,
   };
 
-  const ProductJson = path.join(__dirname, "Data", "product.json");
+  const ProductJson = path.join(__dirname, "./Data", "product.json");
   console.log("ProductJson:", ProductJson);
   fs.readFile(ProductJson, "utf-8", (err, data) => {
     if (err) {
