@@ -1,1 +1,31 @@
-[]
+{
+  "Users": [
+    {
+      "firstName": "hi",
+      "lastName": "hello",
+      "email": "a@gmail.co",
+      "password": 123456789
+    },
+    {
+      "firstName": "hi",
+      "lastName": "hello",
+      "email": "a@gmail.co",
+      "password": 123456789,
+      "id": 2
+    },
+    {
+      "firstName": "Kishore",
+      "lastName": "kishore",
+      "email": "kishoremurgan0077@gmail.com",
+      "password": "1234",
+      "id": 3
+    },
+    {
+      "firstName": "Kishore",
+      "lastName": "kishore",
+      "email": "kishoremurgan0077@gmail.com",
+      "password": "1234",
+      "id": 4
+    }
+  ]
+}

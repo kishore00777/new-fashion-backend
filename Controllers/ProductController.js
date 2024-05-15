@@ -3,32 +3,32 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.resolve(__dirname, "../Data/productImages");
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    );
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     const uploadPath = path.resolve(__dirname, "../Data/productImages");
+//     cb(null, uploadPath);
+//   },
+//   filename: (req, file, cb) => {
+//     cb(
+//       null,
+//       `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
+//     );
+//   },
+// });
 
-const upload = multer({
-  storage: storage,
-});
+// const upload = multer({
+//   storage: storage,
+// });
 
 const addProduct = (req, res) => {
-  //   upload.array("images")(req, res, (err) => {
-  //     if (err instanceof multer.MulterError) {
-  //       return res.status(500).send("Multer error");
-  //     } else if (err) {
-  //       return res.status(500).send("Unknown error");
-  //     }
-  //   });
-  const file = req.files;
+  // upload.array("images")(req, res, (err) => {
+  //   if (err instanceof multer.MulterError) {
+  //     return res.status(500).send("Multer error");
+  //   } else if (err) {
+  //     return res.status(500).send("Unknown error");
+  //   }
+  // });
+
   const {
     title,
     color,
@@ -40,12 +40,12 @@ const addProduct = (req, res) => {
     topDeals,
     dealHead,
   } = req.body || {};
-  console.log("Request Body:", req.body);
+  const file = req.files;
 
   if (!file || file.length === 0) {
     return res.status(400).send("No files Uploaded");
   }
-  const images = file.map((i) => i.filename);
+  const images = file.map((file) => file.filename);
 
   const newProduct = {
     title,
@@ -54,7 +54,7 @@ const addProduct = (req, res) => {
     actualPrice,
     model,
     description,
-    img: images,
+    images,
     spec,
     topDeals,
     dealHead,
@@ -78,11 +78,24 @@ const addProduct = (req, res) => {
     fs.writeFile(ProductJson, updatedJson, (err) => {
       if (err) {
         console.error("Error updating product.json file:", err);
-        return res.status(500), send("Error updating product.json file");
+        return res.status(500).json({
+          responseStatus: "Failure",
+          errorMessage: "Error updating product.json file",
+          message: null,
+          image: null,
+          status: null,
+        });
       }
-      res.send("File uploaded, product added, and product.json updated");
+      res.status(200).json({
+        responseStatus: "Success",
+        errorMessage: null,
+        message: "File uploaded, product added, and product.json updated",
+        image: null,
+        status: null,
+      });
     });
   });
+  console.log("Request Body:", req.body, req.files);
 };
 
 const getAllData = (req, res) => {
@@ -93,5 +106,4 @@ const getAllData = (req, res) => {
 module.exports = {
   getAllData,
   addProduct,
-  upload,
 };

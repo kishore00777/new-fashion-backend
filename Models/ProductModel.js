@@ -6,7 +6,7 @@ class product {
     actualPrice,
     model,
     description,
-    img = [],
+    images = [],
     spec = [],
     topDeals,
     dealHead
@@ -17,7 +17,7 @@ class product {
     this.actualPrice = actualPrice;
     this.model = model;
     this.description = description;
-    this.img = img;
+    this.images = images;
     this.spec = spec;
     this.topDeals = topDeals;
     this.dealHead = dealHead;

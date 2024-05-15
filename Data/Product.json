@@ -300,44 +300,6 @@
       ],
       "id": 10,
       "topDeals": null
-    },
-    {
-      "title": "testing",
-      "color": "black",
-      "price": "24",
-      "actualPrice": "24",
-      "model": "boat",
-      "description": "dfghjkjhgfdfghj",
-      "img": [
-        "images-1715630116112.jpg",
-        "images-1715630116118.jpg",
-        "images-1715630116122.jpg",
-        "images-1715630116125.jpg",
-        "images-1715630116127.jpg"
-      ],
-      "spec": "[\n        \"dfghj\",\n        \"rthbhj\"\n    ]",
-      "topDeals": "yes",
-      "dealHead": "yes",
-      "id": 11
-    },
-    {
-      "title": "heeeeeeeeeeeeeeeeeeeeeee",
-      "color": "black",
-      "price": "24",
-      "actualPrice": "24",
-      "model": "boat",
-      "description": "dfghjkjhgfdfghj",
-      "img": [
-        "images-1715633089494.jpg",
-        "images-1715633089501.jpg",
-        "images-1715633089506.jpg",
-        "images-1715633089508.jpg",
-        "images-1715633089512.jpg"
-      ],
-      "spec": "[\n        \"dfghj\",\n        \"rthbhj\"\n    ]",
-      "topDeals": "yes",
-      "dealHead": "yes",
-      "id": 12
     }
   ]
 }
