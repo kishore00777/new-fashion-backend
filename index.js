@@ -15,5 +15,5 @@ app.use("/products", productRoutes);
 app.use("/user", UserRoutes);
 
 app.listen(PORT, () => {
-  console.log(`running on ${PORT}`);
+  console.log(`🏃 running on ${PORT}`);
 });
