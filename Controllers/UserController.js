@@ -66,6 +66,30 @@ const SignUp = async (req, res) => {
   }
 };
 
+const GetUsers = async (req, res) => {
+  try {
+    const data = await User.find({});
+    res.json(data);
+    res.status(200).json({
+      responseStatus: "Success",
+      errorMessage: null,
+      message: "User Sucessfully fetched",
+      image: null,
+      status: null,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      responseStatus: "Failure",
+      errorMessage: "Error on fetching User",
+      message: null,
+      image: null,
+      status: null,
+    });
+  }
+};
+
 module.exports = {
   SignUp,
+  GetUsers,
 };

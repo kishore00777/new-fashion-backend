@@ -14,7 +14,6 @@ const storage = multer.diskStorage({
       null,
       `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
     );
-    console.log("hi");
   },
 });
 
@@ -24,16 +23,11 @@ const upload = multer({
 
 const productController = require("../Controllers/ProductController");
 
-router.get("/getAllProducts", productController.getAllData);
+router.get("/getAllProducts", productController.GetAllProducts);
 router.post(
   "/addProduct",
   upload.array("images", 5),
-  productController.addProduct
+  productController.NewProduct
 );
-// router.post(
-//   "/addProduct",
-//   upload.array("images", 5),
-//   productController.addProduct
-// );
 
 module.exports = router;
