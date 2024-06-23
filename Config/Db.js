@@ -13,7 +13,9 @@ const Connect = async () => {
       }`
     );
   } catch (err) {
-    console.log("mongoose FAILED");
+    console.log(
+      `mongoose FAILED on ${url === process.env.CLOUD ? "CLOUD💭" : "LOCAL🧩"}`
+    );
   }
 };
 module.exports = Connect;

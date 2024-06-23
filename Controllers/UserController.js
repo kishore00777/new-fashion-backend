@@ -1,58 +1,43 @@
-const fs = require("fs");
-const path = require("path");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const User = require("../Models/UserModel");
-
-// const SignUp = (req, res) => {
-//   const { firstName, lastName, email, password } = req.body;
-//   const newUser = {
-//     firstName,
-//     lastName,
-//     email,
-//     password,
-//   };
-//   const userJson = path.join(__dirname, "../Data/Users.json");
-//   fs.readFile(userJson, "utf-8", (err, data) => {
-//     if (err) {
-//       console.error("Error on reading Json file");
-//       return res.status(500).send("Error on reading Json file");
-//     }
-//     const Users = JSON.parse(data).Users;
-//     newUser.id = Users.length + 1;
-//     const updatedUsers = [...Users, newUser];
-
-//     const updatedJson = JSON.stringify({ Users: updatedUsers }, null, 2);
-//     fs.writeFile(userJson, updatedJson, (err) => {
-//       if (err) {
-//         return res.status(500).json({
-//           responseStatus: "Failure",
-//           errorMessage: "Error on SignUp",
-//           message: null,
-//           image: null,
-//           status: null,
-//         });
-//       }
-//       res.status(200).json({
-//         responseStatus: "Success",
-//         errorMessage: null,
-//         message: "Successfully SignUped",
-//         image: null,
-//         status: null,
-//       });
-//     });
-//   });
-// };
+require("dotenv").config();
 
 const SignUp = async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
-    const newUser = User({ firstName, lastName, email, password });
+    const { userName, email, password } = req.body;
+
+    const findEmail = await User.findOne({ email });
+    if (findEmail) {
+      return res.status(400).send("Email already exists");
+    }
+    if (!userName || !email || !password) {
+      return res.status(400).send("All fields are required");
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = User({
+      userName,
+      email,
+      password: hashedPassword,
+    });
+
     await newUser.save();
-    res.status(200).json({
-      responseStatus: "Success",
-      errorMessage: null,
-      message: "User Sucessfully added",
-      image: null,
-      status: null,
+    const user = await User.findOne({ email });
+
+    const generateToken = (id) => {
+      const payload = {
+        user: {
+          id: user.id,
+        },
+      };
+      return jwt.sign(payload, process.env.SECRET, { expiresIn: "2d" });
+    };
+
+    res.json({
+      id: user._id,
+      userName: user.userName,
+      email: user.email,
+      token: generateToken(user._id),
     });
   } catch (err) {
     console.error(err);
@@ -63,6 +48,82 @@ const SignUp = async (req, res) => {
       image: null,
       status: null,
     });
+  }
+};
+
+const Login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    // console.log(email, password);
+    const user = await User.findOne({ email });
+    // console.log(user);
+    if (!user) {
+      return res.status(400).send("Incorrect email or password");
+    }
+
+    const checkPassword = bcrypt.compare(password, user.password);
+    if (!checkPassword) {
+      return res.status(400).send("Incorrect email or password");
+    }
+    const generateToken = (id) => {
+      const payload = {
+        user: {
+          id: user.id,
+        },
+      };
+      return jwt.sign(payload, process.env.SECRET, { expiresIn: "2d" });
+    };
+
+    if (user && checkPassword) {
+      res.json({
+        id: user._id,
+        userName: user.userName,
+        email: user.email,
+        token: generateToken(user._id),
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      responseStatus: "Failure",
+      errorMessage: "Error on Login",
+      message: null,
+      image: null,
+      status: null,
+    });
+  }
+};
+
+const LogOut = async (req, res) => {
+  try {
+    req.session.destroy((err) => {
+      if (err) {
+        res.status(500).json({ message: "Error on logout" });
+      } else {
+        res.status(200).json({ message: "Logged out Successfully" });
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error on logout" });
+  }
+};
+
+const GetMe = async (req, res) => {
+  const { _id, userName, email } = await User.findById(req.user.id);
+  console.log(_id, userName, email);
+  res.status(200).json({
+    _id,
+    userName,
+    email,
+  });
+};
+
+const ForgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(400).json({ message: "NO USER FOUND" });
   }
 };
 
@@ -92,4 +153,8 @@ const GetUsers = async (req, res) => {
 module.exports = {
   SignUp,
   GetUsers,
+  Login,
+  LogOut,
+  ForgotPassword,
+  GetMe,
 };
