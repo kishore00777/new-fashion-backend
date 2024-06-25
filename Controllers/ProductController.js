@@ -6,12 +6,11 @@ const NewProduct = async (req, res) => {
       title,
       color,
       price,
+      brand,
       actualPrice,
       model,
       description,
       spec,
-      topDeals,
-      dealHead,
     } = req.body || {};
     const file = req.files;
 
@@ -24,13 +23,12 @@ const NewProduct = async (req, res) => {
       title,
       color,
       price,
+      brand,
       actualPrice,
       model,
       description,
       images,
       spec,
-      topDeals,
-      dealHead,
     });
     await newProduct.save();
     res.status(200).json({
@@ -75,7 +73,23 @@ const GetAllProducts = async (req, res) => {
   }
 };
 
+const GetProductById = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const getProduct = await Product.findById({ _id });
+    if (!getProduct) {
+      res.status(404).json({ error: "Product not Found" });
+    } else {
+      res.status(200).json([getProduct]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error on Loading" });
+  }
+};
+
 module.exports = {
   GetAllProducts,
   NewProduct,
+  GetProductById,
 };

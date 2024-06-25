@@ -24,6 +24,7 @@ const upload = multer({
 const productController = require("../Controllers/ProductController");
 
 router.get("/getAllProducts", productController.GetAllProducts);
+router.get("/getProductbyId/:_id", productController.GetProductById);
 router.post(
   "/addProduct",
   upload.array("images", 5),
