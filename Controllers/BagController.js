@@ -3,31 +3,32 @@ const Product = require("../Models/ProductModel");
 const User = require("../Models/UserModel");
 
 const AddToBag = async (req, res) => {
-  const { userId, productId, count } = req.body;
+  const { userId, productId } = req.params;
+  const { count } = req.body;
   try {
-    const user = await User.findById({ userId });
-    const product = await Product.findById({ productId });
+    const user = await User.findById({ _id: userId });
+    const product = await Product.findById({ _id: productId });
 
     if (!user || !product) {
       res.status(404).json({ error: "Cant add this product to Bag" });
     } else {
-      const FindProduct = await Bag.find({
+      const FindProduct = await Bag.findOne({
         userId: userId,
         productId: productId,
       });
 
       if (FindProduct) {
-        const productCount = FindProduct.count;
-        await Bag.updateOne({
-          productId: productId,
-          count: productCount + count,
-        });
+        const productCount = FindProduct.count + count;
+        await Bag.updateOne(
+          { userId, productId },
+          { $set: { count: productCount } }
+        );
+        res.status(200).json({ message: "Updated successfullty" });
       } else {
         const Add = new Bag({ userId, productId, count });
         await Add.save();
+        res.status(200).json({ message: "Product Added to Bag Successfully" });
       }
-
-      res.status(200).json({ message: "Product Added to Bag Successfully" });
     }
   } catch (error) {
     console.error(error);
@@ -71,4 +72,16 @@ const RemoveFromBag = async (req, res) => {
   }
 };
 
-module.exports = { AddToBag, RemoveFromBag };
+const TotalProducts = async (req, res) => {
+  try {
+    const Products = await Bag.find({});
+    const getCount = Products.map((i) => i.count);
+    const Total = getCount.reduce((acc, i) => acc + i, 0);
+    res.status(200).json({ total: Total });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error on getting count" });
+  }
+};
+
+module.exports = { AddToBag, RemoveFromBag, TotalProducts };
